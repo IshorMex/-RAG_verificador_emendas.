@@ -2,7 +2,7 @@
 
 # ⚖️ Sumula Jurídica STJ: Ferramenta de Análise de Súmulas
 
-Este projeto é uma ferramenta de análise de texto jurídico que utiliza técnicas de Processamento de Linguagem Natural (PLN) e busca por similaridade semântica para encontrar súmulas relevantes do Superior Tribunal de Justiça (STJ). O sistema utiliza um modelo de linguagem para gerar uma análise sobre o enquadramento de uma ementa fornecida pelo usuário.
+Este projeto é uma ferramenta de análise de texto jurídico que utiliza técnicas de Processamento de Linguagem Natural (PLN) e busca por similaridade semântica para encontrar súmulas relevantes do Superior Tribunal de Justiça (STJ). O sistema utiliza um modelo de linguagem para gerar uma análise sobre o enquadramento de uma ementa fornecida pelo usuário. O projeto faz parte de um desafio para a segunda fase do processo seletivo do LIA - Laboratório de Inteligência Artificial da UFMS, espero que goste.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
