@@ -39,6 +39,13 @@ def consultar(caso: str, maior_k: int):
         if pontuacao >= limite:
             s = corpus_especifico[idx]
             ementas_referentes.append({"score": pontuacao, "text": f"Súmula {s['numero']} - {s['titulo']}: {s['enunciado']}"})
+            #caso queira ver as sulmulas que ele encontrou com uma pontuacao agradavel retire o """" abaixo:
+            """
+            print(f'Sumula Encontrada: Súmula {s['numero']}')
+            print(f'Título: {s['titulo']}')
+            print(f'Enunciado: {s['enunciado']}')
+            print('-'*25)#linha para melhorar visualização
+            """
 
     #Selecionamos as 5 mais relevantes entao as entregamos a ML!
     if ementas_referentes:
@@ -59,9 +66,10 @@ def detectar_ramo(ementa_analise: str) -> str:
 
 def limitacao_dinamica(ramo):
     #entregamos limites diferentes em casos diferentes! Com mais pesquisas/testes eh possivel refinar ainda mais esses valores!
-    thresholds = {"DIREITO PENAL": 0.70,"DIREITO CIVIL": 0.65,"GERAL": 0.6}
+    thresholds = {"DIREITO PENAL": 0.60, "DIREITO CIVIL": 0.55, "DIREITO PREVIDENCIÁRIO": 0.55,"DIREITO ADMINISTRATIVO": 0.55, "DIREITO TRIBUTÁRIO": 0.55, "GERAL": 0.50 }
 
-    return thresholds.get(ramo, 0.65)#como ñ houve ainda um grande refinamento estamos retornado um valor "medio" entre os que ja decidimos para outros casos.
+    #como ñ houve ainda um grande refinamento estamos retornado um valor "medio" entre os que ja decidimos para outros casos.
+    return thresholds.get(ramo, 0.55)
 
 def gerar_resposta(caso, sumulas_relevantes): #mágica da ML
     sumulas_txt = "\n\n".join(sumulas_relevantes)
@@ -144,6 +152,7 @@ for ramo in ramos_unicos:
         print(f"Aviso: Nenhum embedding encontrado para o ramo '{ramo}'.")
 
 ementa = input("Envie uma ementa para ser analisada: ")
-K =  15 
+print()
+K =  50
 #Por mais bobo que pareca esse 'K' eh muito importante, eh recomendado utiliza-la entre 15 - 50 nessa ML! O mais convencional (5) acaba por n ser muito efetivo nesse prototipo D:
 consultar(ementa, K)
