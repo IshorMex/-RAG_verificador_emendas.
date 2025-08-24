@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 from transformers import pipeline, T5Tokenizer
 import torch
 
-# INICIALIZADOR
+# INCIALIZANDO...
 llm = pipeline("text2text-generation", model="unicamp-dl/ptt5-base-portuguese-vocab", tokenizer=T5Tokenizer.from_pretrained("unicamp-dl/ptt5-base-portuguese-vocab"), max_new_tokens=2048)
 model = SentenceTransformer("all-mpnet-base-v2") 
 # MODELOS ON!
@@ -40,17 +40,18 @@ def consultar(caso: str, maior_k: int):
             s = corpus_especifico[idx]
             ementas_referentes.append({"score": pontuacao, "text": f"Súmula {s['numero']} - {s['titulo']}: {s['enunciado']}"})
             #caso queira ver as sulmulas que ele encontrou com uma pontuacao agradavel retire o """" abaixo:
-            """
-            print(f'Sumula Encontrada: Súmula {s['numero']}')
-            print(f'Título: {s['titulo']}')
-            print(f'Enunciado: {s['enunciado']}')
+            print(f"[Pontuação: {pontuacao}]")
+            print(f"Sumula Encontrada: Súmula {s['numero']}")
+            print(f"Título: {s['titulo']}")
+            print(f"Enunciado: {s['enunciado']}")
             print('-'*25)#linha para melhorar visualização
-            """
+            
 
     #Selecionamos as 5 mais relevantes entao as entregamos a ML!
     if ementas_referentes:
         top5_ementa = sorted(ementas_referentes, key=lambda x: x['score'], reverse=True)[:5]
         top5 = [item['text'] for item in top5_ementa]
+        print("Resposta do modelo....")
         print(gerar_resposta(caso, top5))
     else:
         print("\nNenhuma súmula relevante encontrada! :( )")
@@ -66,10 +67,10 @@ def detectar_ramo(ementa_analise: str) -> str:
 
 def limitacao_dinamica(ramo):
     #entregamos limites diferentes em casos diferentes! Com mais pesquisas/testes eh possivel refinar ainda mais esses valores!
-    thresholds = {"DIREITO PENAL": 0.60, "DIREITO CIVIL": 0.55, "DIREITO PREVIDENCIÁRIO": 0.55,"DIREITO ADMINISTRATIVO": 0.55, "DIREITO TRIBUTÁRIO": 0.55, "GERAL": 0.50 }
+    thresholds = {"DIREITO PENAL": 0.70, "DIREITO CIVIL": 0.65, "DIREITO PREVIDENCIÁRIO": 0.65,"DIREITO ADMINISTRATIVO": 0.60, "DIREITO TRIBUTÁRIO": 0.60, "GERAL": 0.60 }
 
     #como ñ houve ainda um grande refinamento estamos retornado um valor "medio" entre os que ja decidimos para outros casos.
-    return thresholds.get(ramo, 0.55)
+    return thresholds.get(ramo, 0.60)
 
 def gerar_resposta(caso, sumulas_relevantes): #mágica da ML
     sumulas_txt = "\n\n".join(sumulas_relevantes)
@@ -104,14 +105,7 @@ def gerar_resposta(caso, sumulas_relevantes): #mágica da ML
     
     #chamamos o modelo (unicamp-dl/ptt5-base-portuguese-vocab) um modelo de base T5, logo sua resposta infelzmente ñ é a mais limpa...Caso houvesse acesso para uso de bots melhores (NVIDIA LLM,SABIA-7B ou GPT-3.5) o resultado seria ainda melhor!!
     resposta_completa = llm(prompt)[0]["generated_text"]
-    #uma tentativa de "limpeza na resposta"
-    partes = resposta_completa.split("### RESPOSTA:", 1)
-    
-    #uma precaução para caso a 'limpeza' seja tenebrosa
-    if len(partes) > 1: 
-        return partes[1].strip()
-    else:
-        return resposta_completa.strip()
+    return resposta_completa
 
 #---------------------------------------------
 # extrair o .json para uso
@@ -154,5 +148,5 @@ for ramo in ramos_unicos:
 ementa = input("Envie uma ementa para ser analisada: ")
 print()
 K =  50
-#Por mais bobo que pareca esse 'K' eh muito importante, eh recomendado utiliza-la entre 15 - 50 nessa ML! O mais convencional (5) acaba por n ser muito efetivo nesse prototipo D:
+#Por mais bobo que pareca esse 'K' eh muito importante, eh recomendado utiliza-la entre 25 - 50 nessa ML! O mais convencional (5-15) acaba por n ser muito efetivo nesse prototipo D:
 consultar(ementa, K)
