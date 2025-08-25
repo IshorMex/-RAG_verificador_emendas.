@@ -40,12 +40,13 @@ def consultar(caso: str, maior_k: int):
             s = corpus_especifico[idx]
             ementas_referentes.append({"score": pontuacao, "text": f"Súmula {s['numero']} - {s['titulo']}: {s['enunciado']}"})
             #caso queira ver as sulmulas que ele encontrou com uma pontuacao agradavel retire o """" abaixo:
+            """"
             print(f"[Pontuação: {pontuacao}]")
             print(f"Sumula Encontrada: Súmula {s['numero']}")
             print(f"Título: {s['titulo']}")
             print(f"Enunciado: {s['enunciado']}")
             print('-'*25)#linha para melhorar visualização
-            
+            """"
 
     #Selecionamos as 5 mais relevantes entao as entregamos a ML!
     if ementas_referentes:
@@ -150,3 +151,4 @@ print()
 K =  50
 #Por mais bobo que pareca esse 'K' eh muito importante, eh recomendado utiliza-la entre 25 - 50 nessa ML! O mais convencional (5-15) acaba por n ser muito efetivo nesse prototipo D:
 consultar(ementa, K)
+
